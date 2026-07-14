@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import json
+import re
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -112,14 +113,48 @@ async def sync_datasource(
 
     try:
         import pandas as pd
+        from sqlalchemy import quoted_name
         from sqlalchemy.ext.asyncio import create_async_engine
+
+        # Validate table_name: alphanumeric + underscores only, no SQL metacharacters
+        if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", table_name):
+            raise HTTPException(status_code=400, detail=f"Invalid table name: {table_name!r}")
 
         ext_engine = create_async_engine(conn_url, echo=False)
         async with ext_engine.connect() as conn:
-            result_proxy = await conn.execute(text(f"SELECT * FROM {table_name} LIMIT 50000"))  # noqa: S608
+            # Verify the table actually exists in the external source
+            table_exists = False
+            source_type = config_data.get("source_type", "")
+            if source_type == "sqlite":
+                result = await conn.execute(
+                    text("SELECT name FROM sqlite_master WHERE type='table' AND name = :tn"),
+                    {"tn": table_name},
+                )
+                table_exists = result.scalar() is not None
+            else:
+                result = await conn.execute(
+                    text(
+                        "SELECT table_name FROM information_schema.tables "
+                        "WHERE table_schema = 'public' AND table_name = :tn"
+                    ),
+                    {"tn": table_name},
+                )
+                table_exists = result.scalar() is not None
+            if not table_exists:
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Table {table_name!r} not found in the external data source",
+                )
+
+            safe_name = quoted_name(table_name, True)
+            result_proxy = await conn.execute(
+                text(f"SELECT * FROM {safe_name} LIMIT 50000")
+            )
             rows_data = [dict(r._mapping) for r in result_proxy.fetchall()]
             col_names = list(result_proxy.keys())
         await ext_engine.dispose()
+    except HTTPException:
+        raise
     except Exception as exc:
         raise HTTPException(status_code=400, detail=f"Failed to query external source: {exc}") from exc
 
