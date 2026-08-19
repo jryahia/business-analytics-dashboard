@@ -81,7 +81,7 @@ class SourcesView(ft.Container):
             content=ft.Column(
                 spacing=20,
                 controls=[
-                    ft.Text("🔗 Data Sources", size=28, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                    ft.Text(" Data Sources", size=28, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                     ft.Text(
                         "Connect external databases to pull live data into your dashboards.",
                         size=14,
@@ -217,13 +217,13 @@ class SourcesView(ft.Container):
             config = self._build_source_config()
             result = self.api_client.post("/api/datasources/test", config)
             if result.get("success"):
-                self.status_text.value = "✅ Connection successful!"
+                self.status_text.value = " Connection successful!"
                 self.status_text.color = ft.Colors.GREEN_400
             else:
-                self.status_text.value = f"❌ Connection failed: {result.get('error', 'Unknown error')}"
+                self.status_text.value = f" Connection failed: {result.get('error', 'Unknown error')}"
                 self.status_text.color = ft.Colors.RED_400
         except Exception as ex:
-            self.status_text.value = f"❌ Error: {str(ex)}"
+            self.status_text.value = f" Error: {str(ex)}"
             self.status_text.color = ft.Colors.RED_400
         self.loading.visible = False
         self.update()
@@ -236,12 +236,12 @@ class SourcesView(ft.Container):
         try:
             config = self._build_source_config()
             self.api_client.post("/api/datasources", config)
-            self.status_text.value = "✅ Source saved!"
+            self.status_text.value = " Source saved!"
             self.status_text.color = ft.Colors.GREEN_400
             self._clear_form()
             self._load_sources()
         except Exception as ex:
-            self.status_text.value = f"❌ Error: {str(ex)}"
+            self.status_text.value = f" Error: {str(ex)}"
             self.status_text.color = ft.Colors.RED_400
         self.loading.visible = False
         self.update()
@@ -251,7 +251,7 @@ class SourcesView(ft.Container):
             self.api_client.delete(f"/api/datasources/{source.get('id')}")
             self._load_sources()
         except Exception as ex:
-            self.status_text.value = f"❌ Delete failed: {str(ex)}"
+            self.status_text.value = f" Delete failed: {str(ex)}"
             self.status_text.color = ft.Colors.RED_400
             self.update()
 

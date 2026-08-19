@@ -114,7 +114,7 @@ class ChartsView(ft.Container):
                 controls=[
                     ft.Row(
                         controls=[
-                            ft.Text("📊 Charts", size=28, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ft.Text(" Charts", size=28, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                             ft.Container(expand=True),
                             ft.FilledButton(
                                 "New Chart",
@@ -213,7 +213,7 @@ class ChartsView(ft.Container):
             "group_by": self.group_by.value.strip() or None,
         }
         if not data["name"] or not data["x_axis"] or not data["y_axis"]:
-            self.status_text.value = "❌ Name, X-Axis, and Y-Axis are required"
+            self.status_text.value = " Name, X-Axis, and Y-Axis are required"
             self.status_text.color = ft.Colors.RED_400
             self.update()
             return
@@ -221,11 +221,11 @@ class ChartsView(ft.Container):
             self.api_client.post("/api/charts", data)
             self._clear_form()
             self.create_dialog.open = False
-            self.status_text.value = "✅ Chart created!"
+            self.status_text.value = " Chart created!"
             self.status_text.color = ft.Colors.GREEN_400
             self._load_charts()
         except Exception as ex:
-            self.status_text.value = f"❌ Error: {str(ex)}"
+            self.status_text.value = f" Error: {str(ex)}"
             self.status_text.color = ft.Colors.RED_400
         self.update()
 
@@ -234,7 +234,7 @@ class ChartsView(ft.Container):
             self.api_client.delete(f"/api/charts/{chart.get('id')}")
             self._load_charts()
         except Exception as ex:
-            self.status_text.value = f"❌ Delete failed: {str(ex)}"
+            self.status_text.value = f" Delete failed: {str(ex)}"
             self.status_text.color = ft.Colors.RED_400
             self.update()
 

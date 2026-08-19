@@ -44,7 +44,7 @@ class SettingsView(ft.Container):
             content=ft.Column(
                 spacing=20,
                 controls=[
-                    ft.Text("⚙️ Settings", size=28, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                    ft.Text(" Settings", size=28, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                     ft.Divider(color=ft.Colors.with_opacity(0.1, ft.Colors.WHITE)),
 
                     # Profile Section
@@ -214,7 +214,7 @@ class SettingsView(ft.Container):
                     ft.Text(
                         "Business Analytics Dashboard v1.0.0\n"
                         "Built with FastAPI, React, Flet, and Plotly.\n"
-                        "© 2026 Business Analytics Suite",
+                        " 2026 Business Analytics Suite",
                         size=12,
                         color=ft.Colors.GREY_600,
                     ),
@@ -223,7 +223,7 @@ class SettingsView(ft.Container):
         )
 
     def _save_settings(self, e):
-        self.status_text.value = "✅ Settings saved"
+        self.status_text.value = " Settings saved"
         self.status_text.color = ft.Colors.GREEN_400
         self.update()
         import threading
@@ -240,10 +240,10 @@ class SettingsView(ft.Container):
         self.update()
         try:
             result = self.api_client.get("/health")
-            self.status_text.value = f"✅ Connected! Status: {result}"
+            self.status_text.value = f" Connected! Status: {result}"
             self.status_text.color = ft.Colors.GREEN_400
         except Exception as ex:
-            self.status_text.value = f"❌ Connection failed: {str(ex)}"
+            self.status_text.value = f" Connection failed: {str(ex)}"
             self.status_text.color = ft.Colors.RED_400
         self.update()
 

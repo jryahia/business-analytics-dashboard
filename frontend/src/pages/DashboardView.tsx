@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Download, RefreshCw, Lightbulb } from "lucide-react";
+import { ArrowLeft, Plus, Download, RefreshCw, Lightbulb, X } from "lucide-react";
 import { useDashboardStore } from "@/store/dashboardStore";
 import { insightsApi, exportApi, type Insight } from "@/lib/api";
 import ChartCard from "@/components/ChartCard";
@@ -83,7 +83,7 @@ export default function DashboardView() {
               <Lightbulb className="w-4 h-4 text-brand-400" />
               <h3 className="font-semibold text-dark-100">AI Business Insights</h3>
             </div>
-            <button className="text-dark-500 hover:text-dark-300 text-sm" onClick={() => setShowInsight(false)}>✕</button>
+            <button className="text-dark-500 hover:text-dark-300 text-sm" onClick={() => setShowInsight(false)}><X className="w-4 h-4" /></button>
           </div>
           {loadingInsight ? (
             <div className="space-y-2">
